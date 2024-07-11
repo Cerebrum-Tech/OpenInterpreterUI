@@ -122,9 +122,9 @@ def set_open_ai_credentials():
         context_window = st.session_state['models']['openai'][model]['context_window']
 
         temperature = st.slider('🌡 Tempeture', min_value=0.01, max_value=1.0,
-                                value=st.session_state.get('temperature', 0.1), step=0.01)
+                                value=st.session_state.get('temperature', 0.6), step=0.01)
         max_tokens = st.slider('📝 Max tokens', min_value=1, max_value=2000,
-                               value=st.session_state.get('max_tokens', 600), step=1)
+                               value=st.session_state.get('max_tokens', 1500), step=1)
 
         num_pair_messages_recall = st.slider(
             '**Memory Size**: user-assistant message pairs', min_value=1, max_value=10, value=7)
