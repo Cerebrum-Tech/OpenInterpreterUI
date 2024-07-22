@@ -5,7 +5,6 @@ from src.data.models import Conversation, Chat
 
 DATABASE_PATH = "../chats.db"
 
-
 @contextmanager
 def create_connection():
     connection = sqlite3.connect(DATABASE_PATH)
@@ -81,5 +80,7 @@ def delete_conversation(conversation_id):
     with create_connection() as cursor:
         cursor.execute(
             "DELETE FROM chats WHERE conversation_id=?", (conversation_id,))
-        cursor.execute("DELETE FROM conversations WHERE id=?",
-                       (conversation_id,))
+        cursor.execute("DELETE FROM conversations WHERE id=?", (conversation_id,))
+        
+
+create_tables()

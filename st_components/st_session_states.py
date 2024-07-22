@@ -5,7 +5,7 @@ from interpreter import interpreter
 import os
 from src.utils.prompts import PROMPTS
 
-MODEL_PATH = os.path.join(os.getcwd(), 'models.json')
+MODEL_PATH = os.path.join(os.getcwd(),'models.json')
 
 
 def init_session_states():
