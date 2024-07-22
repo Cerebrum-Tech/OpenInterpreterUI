@@ -2,11 +2,17 @@ import streamlit as st
 
 from st_components.st_conversations import init_conversations
 from st_components.st_messages import chat_with_interpreter
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from st_settings import settings_page  
 
 # Database
 from src.data.database import get_chats_by_conversation_id, save_conversation
 from src.data.models import Conversation
 import uuid
+
 
 
 def st_main():
@@ -20,22 +26,15 @@ def st_main():
         footer {visibility: hidden;}
         #stDecoration {display:none;}
     </style>
-""", unsafe_allow_html=True)
-    # try:
-    if not st.session_state['chat_ready']:
+    """, unsafe_allow_html=True)
 
+    
+    if not st.session_state.get('chat_ready', False):
         introduction()
-
     else:
-
         create_or_get_current_conversation()
-
         render_messages()
-
         chat_with_interpreter()
-
-    # except Exception as e:
-    #     st.error(e)
 
 
 def create_or_get_current_conversation():
@@ -48,12 +47,17 @@ def create_or_get_current_conversation():
             new_conversation = Conversation(
                 conversation_id, st.session_state.user_id, f"Conversation {len(conversations)}")
             save_conversation(new_conversation)
-            st.session_state['current_conversation'] = new_conversation
+            st.session_state['current_conversation'] = {
+                "id": new_conversation.id,
+                "user_id": new_conversation.user_id,
+                "name": new_conversation.name
+            }
             st.session_state["messages"] = []
             st.rerun()
     else:
         st.session_state.messages = get_chats_by_conversation_id(
-            st.session_state['current_conversation']["id"])
+            st.session_state['current_conversation']["id"]
+        )
 
 
 def render_messages():
@@ -75,4 +79,4 @@ def introduction():
     Display introductory messages for the user.
     """
     st.info("👋 Hey, we're very happy to see you here. 🤗")
-    st.info("👉 Select the model from the left panel to be able to run code while you generate it 🚀")
+    st.info("👉 Select the model from the menu to start the chat 🚀")

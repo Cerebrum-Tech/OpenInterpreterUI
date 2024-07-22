@@ -1,0 +1,28 @@
+credentials:
+  usernames:
+    alpozalp:
+      email: alpozalp@gmail.com
+      name: Alp Eren
+      password: $2b$12$gyFiCE0D4xXu8Kry2ZVMeel0hK8Z51L7QVtqdm0YHFIB5vMiBUgIK
+
+    esraturul:
+      email: esratrl@gmail.com
+      name: Esra
+      password: $2b$12$neLNRb1pqiFqvqZLfRPS4OZFf8HfIl0PIERn8QhSfaGXMR6MiSJFq
+
+    mfurkanors:
+      email: mfurkanors@gmail.com
+      name: Furkan
+      password: $2b$12$CaBhUCTr3u6VWlVhyWLXruYmi1/zeGK/RtonzDjRP293cRh2M/cIa
+
+    ahmetozdemir:
+      email: ahmetozdemir@gmail.com
+      name: Ahmet
+      password: $2b$12$.Fyh7Rmzy0ByVKI.LUSdzem5887aRRGyF0hytvRZxwX4giZ7o37M2
+cookie:
+  expiry_days: 30
+  key: "cerebrum123"
+  name: "open-interpreter"
+preauthorized:
+  emails:
+    - alpozalp@gmail.com
