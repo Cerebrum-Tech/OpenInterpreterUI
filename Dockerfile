@@ -18,4 +18,4 @@ EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-CMD streamlit run Home.py --server.enableCORS false --server.enableXsrfProtection false
+CMD streamlit run app.py --server.enableCORS false --server.enableXsrfProtection false --server.port 8501
