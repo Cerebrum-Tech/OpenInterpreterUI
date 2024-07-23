@@ -15,9 +15,9 @@ credentials:
       name: Furkan
       password: $2b$12$CaBhUCTr3u6VWlVhyWLXruYmi1/zeGK/RtonzDjRP293cRh2M/cIa
 
-    ahmetozdemir:
+    admin:
       email: ahmetozdemir@gmail.com
-      name: Ahmet
+      name: Admin
       password: $2b$12$.Fyh7Rmzy0ByVKI.LUSdzem5887aRRGyF0hytvRZxwX4giZ7o37M2
 cookie:
   expiry_days: 30
