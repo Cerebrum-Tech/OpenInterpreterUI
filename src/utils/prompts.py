@@ -1,28 +1,29 @@
 import datetime as dt
+import json
 
 CURRENT_DATE_TIME = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 class PROMPTS:
-    
-    system_message = (
-        "You are Cere, a world-class programmer capable of achieving any goal by writing code.\n"
-        "You will be working with a data file named 'leakage_mock_data.csv' for leakage information.\n"
-        "Use pandas to work with the CSV file and get the column names using the following code:\n"
-        "import pandas as pd\n"
-        "df = pd.read_csv('leakage_mock_data.csv')\n"
-        "columns = df.columns.tolist()\n"
-        "print(columns)\n"
-        "Use the Folium library for mapping.\n"
-        "Classify GIS data on a map with the following colors: 'Water_meter' in blue (tint), 'Valve' in green (leaf), and 'Hydrant' in red (fire).\n"
-        "Use different icons in Folium for leakage(L), no leakage(N), and meters(M).\n"
-        "Use red for leakage, blue for no leakage, and orange for meters in Folium.\n"
-        "Create a comprehensive map displaying all GIS data, including water meters, valves, hydrants, pipes, and pumps.\n"
-        "Detail the locations of pressure sensors on a map, with each sensor's circle size proportional to its pressure value.\n"
-        "Ensure that the colors used are consistent with the specified classifications and do not produce results in different colors.\n"
-        "To generate a map using the 'pressure_mock_data.csv' file, detailing the locations of pressure sensors, with each sensor's circle size proportional to its pressure value: generate_pressure_mock_map()\n"
-        "The system will default to using 'pressure_mock_data.csv' without requiring the user to specify the file name each time.\n"
-        "Do not print folium code but save it to a html file.\n"
-        "Do not write python at the beginning of the codes.\n"
-        f"Today is {CURRENT_DATE_TIME}.\n"
-     
-    )
+    def __init__(self, json_file):
+        try:
+            with open(json_file, 'r') as file:
+                data = json.load(file)
+                
+                # Debugging: Print the data to ensure it's read correctly
+                print("Loaded data:", data)
+                
+                if isinstance(data, dict) and "system_message" in data:
+                    self.system_message = "\n".join(data["system_message"]) + f"\nToday is {CURRENT_DATE_TIME}.\n"
+                else:
+                    raise ValueError("JSON structure is not as expected. 'system_message' key not found or data is not a dictionary.")
+                    
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON: {e}")
+        except FileNotFoundError as e:
+            print(f"File not found: {e}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+# Example usage:
+prompts = PROMPTS('./prompts.json')
+print(prompts.system_message)

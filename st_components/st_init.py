@@ -1,6 +1,7 @@
 # st_init.py
 import streamlit as st
 
+
 def set_page_config():
     st.set_page_config(
         page_title="Open-Interpreter UI",
