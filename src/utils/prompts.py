@@ -4,6 +4,7 @@ import json
 CURRENT_DATE_TIME = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 class PROMPTS:
+
     def __init__(self, json_file):
         try:
             with open(json_file, 'r') as file:
@@ -27,3 +28,4 @@ class PROMPTS:
 # Example usage:
 prompts = PROMPTS('./prompts.json')
 print(prompts.system_message)
+

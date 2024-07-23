@@ -2,6 +2,7 @@
     "openai": {
         "openai/claude-3-5-sonnet":
         {"context_window": 16000},
+
         "openai/gpt-4o": {
             "context_window": 16000
         },
