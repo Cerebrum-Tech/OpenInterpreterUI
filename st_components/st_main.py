@@ -1,10 +1,9 @@
-import json
 import streamlit as st
+
 from st_components.st_conversations import init_conversations
 from st_components.st_messages import chat_with_interpreter
 import sys
 import os
-import uuid
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from st_settings import settings_page  
@@ -12,8 +11,9 @@ from st_settings import settings_page
 # Database
 from src.data.database import get_chats_by_conversation_id, save_conversation
 from src.data.models import Conversation
+import uuid
 
-CHATS_DIR = 'chats'
+
 
 def st_main():
     st.markdown("""
@@ -28,6 +28,7 @@ def st_main():
     </style>
     """, unsafe_allow_html=True)
 
+    
     if not st.session_state.get('chat_ready', False):
         introduction()
     else:
@@ -35,30 +36,6 @@ def st_main():
         render_messages()
         chat_with_interpreter()
 
-def get_user_id():
-    if 'user_id' not in st.session_state:
-        st.session_state['user_id'] = str(uuid.uuid4())
-    return st.session_state['user_id']
-
-def save_chat(chat):
-    user_id = st.session_state['user_id']
-    filename = os.path.join(CHATS_DIR, f'{user_id}_chats.json')
-    if os.path.exists(filename):
-        with open(filename, 'r') as f:
-            chats = json.load(f)
-    else:
-        chats = []
-    chats.append(chat)
-    with open(filename, 'w') as f:
-        json.dump(chats, f)
-
-def load_chats():
-    user_id = st.session_state['user_id']
-    filename = os.path.join(CHATS_DIR, f'{user_id}_chats.json')
-    if os.path.exists(filename):
-        with open(filename, 'r') as f:
-            return json.load(f)
-    return []
 
 def create_or_get_current_conversation():
     if 'current_conversation' not in st.session_state:
@@ -78,15 +55,28 @@ def create_or_get_current_conversation():
             st.session_state["messages"] = []
             st.rerun()
     else:
-        st.session_state.messages = load_chats()
+        st.session_state.messages = get_chats_by_conversation_id(
+            st.session_state['current_conversation']["id"]
+        )
+
 
 def render_messages():
+    """
+    Render Messages:
+    Render chat-message when generated.
+    """
     for msg in st.session_state.messages:
         if msg["role"] == "user":
-            st.chat_message(msg["role"]).markdown(f'<p>{msg["content"]}</p>', True)
+            st.chat_message(msg["role"]).markdown(
+                f'<p>{msg["content"]}</p>', True)
         elif msg["role"] == "assistant":
             st.chat_message(msg["role"]).markdown(msg["content"])
 
+
 def introduction():
+    """
+    Introduction:
+    Display introductory messages for the user.
+    """
     st.info("👋 Hey, we're very happy to see you here. 🤗")
     st.info("👉 Select the model from the menu to start the chat 🚀")
