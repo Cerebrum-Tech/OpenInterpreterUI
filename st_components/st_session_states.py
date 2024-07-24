@@ -11,11 +11,12 @@ def load_messages_from_json(file_path):
         return json.load(file)
 
 # Assuming the JSON file is named 'system_messages.json' and is in the same directory
-file_path = 'system_messages.json'
-system_messages = load_messages_from_json(file_path)
+file_path = '/home/cerebrum/OpenInterpreterUI/settings.json'
+settings = load_messages_from_json(file_path)
 
 # convert the JSON to text
-messageString= json.dumps(system_messages)
+message= settings['system_message']
+messageString = json.dumps(message)
 
 system_message = (
         messageString

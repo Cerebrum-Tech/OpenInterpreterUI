@@ -12,7 +12,7 @@ def settings_page():
     model = st.selectbox(
         label='🔌 Models',
         options=list(st.session_state.get('models', {}).get('openai', {}).keys()),
-        index=0,
+        index= 0 if st.session_state.get('model') is None else list(st.session_state.get('models', {}).get('openai', {}).keys()).index(st.session_state.get('model'))
     )
     context_window = st.session_state['models']['openai'][model]['context_window']
     temperature = st.slider('🌡 Temperature', min_value=0.01, max_value=1.0,
@@ -26,6 +26,8 @@ def settings_page():
     button_container = st.empty()
     save_button = button_container.button("Save Settings 🚀", key='save_model_configs')
 
+    system_promps = st.text_area("System Message", value=st.session_state.get('system_message'))
+
     if save_button:
         os.environ["OPENAI_API_KEY"] = openai_key
         st.session_state['api_choice'] = 'openai'
@@ -38,8 +40,19 @@ def settings_page():
 
         st.session_state['chat_ready'] = True
         st.success("Settings saved successfully!")
-
+        st.session_state['system_message'] = system_promps
+        # Save the settings to a file
+        with open('/home/cerebrum/OpenInterpreterUI/settings.json', 'w') as f:
+            json.dump({
+                "model": model,
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "context_window": context_window,
+                "num_pair_messages_recall": num_pair_messages_recall,
+                "system_message": system_promps
+            }, f)
+        # restart the app
     # Prompts Section
     
-    st.text_area("System Message", value=st.session_state.get('system_message', PROMPTS.system_message), key='system_message')
+    
     
