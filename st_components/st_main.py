@@ -87,7 +87,7 @@ def introduction():
 
 def load_settings():
     # read settings.json
-    settings_path = os.path.join(os.getcwd(), 'settings.json')
+    settings_path = '/app/settings.json'
     with open(settings_path, 'r') as f:
         settings = json.load(f)
     openai_key = os.environ.get('OPENAI_API_KEY', "")

@@ -42,7 +42,7 @@ def settings_page():
         st.success("Settings saved successfully!")
         st.session_state['system_message'] = system_promps
         # Save the settings to a file
-        settings_path = os.path.join(os.getcwd(), 'settings.json')
+        settings_path = '/app/settings.json'
 
         with open(settings_path, 'w') as f:
             json.dump({
