@@ -1,1 +1,1 @@
-{"model": "openai/Meta-Llama-3-70B", "temperature": 0.71, "max_tokens": 2000, "context_window": 4096, "num_pair_messages_recall": 7, "system_message": "dasdasdas\nsadsda\nadsdsaads"}
+{"model": "openai/claude-3-5-sonnet", "temperature": 0.71, "max_tokens": 2000, "context_window": 16000, "num_pair_messages_recall": 7, "system_message": "dasdasdas\nsadsda\nadsdsaads"}

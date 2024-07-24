@@ -42,7 +42,9 @@ def settings_page():
         st.success("Settings saved successfully!")
         st.session_state['system_message'] = system_promps
         # Save the settings to a file
-        with open('/home/cerebrum/OpenInterpreterUI/settings.json', 'w') as f:
+        settings_path = os.path.join(os.getcwd(), 'settings.json')
+
+        with open(settings_path, 'w') as f:
             json.dump({
                 "model": model,
                 "temperature": temperature,

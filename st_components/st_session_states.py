@@ -11,7 +11,8 @@ def load_messages_from_json(file_path):
         return json.load(file)
 
 # Assuming the JSON file is named 'system_messages.json' and is in the same directory
-file_path = '/home/cerebrum/OpenInterpreterUI/settings.json'
+file_path  = os.path.join(os.getcwd(), 'settings.json')
+
 settings = load_messages_from_json(file_path)
 
 # convert the JSON to text

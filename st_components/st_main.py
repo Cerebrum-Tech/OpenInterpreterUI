@@ -87,7 +87,8 @@ def introduction():
 
 def load_settings():
     # read settings.json
-    with open('/home/cerebrum/OpenInterpreterUI/settings.json', 'r') as f:
+    settings_path = os.path.join(os.getcwd(), 'settings.json')
+    with open(settings_path, 'r') as f:
         settings = json.load(f)
     openai_key = os.environ.get('OPENAI_API_KEY', "")
     model = settings['model']
