@@ -12,7 +12,7 @@ def settings_page():
     model = st.selectbox(
         label='🔌 Models',
         options=list(st.session_state.get('models', {}).get('openai', {}).keys()),
-        index=0 if st.session_state.get('model') is None else list(st.session_state.get('models', {}).get('openai', {}).keys()).index(st.session_state.get('model'))
+        index= 0 if st.session_state.get('model') is None else list(st.session_state.get('models', {}).get('openai', {}).keys()).index(st.session_state.get('model'))
     )
     context_window = st.session_state['models']['openai'][model]['context_window']
     temperature = st.slider('🌡 Temperature', min_value=0.01, max_value=1.0,
@@ -28,9 +28,6 @@ def settings_page():
 
     system_promps = st.text_area("System Message", value=st.session_state.get('system_message'))
 
-    # Show Code option
-    show_code = st.checkbox("Show Code", value=st.session_state.get('show_code', False))
-
     if save_button:
         os.environ["OPENAI_API_KEY"] = openai_key
         st.session_state['api_choice'] = 'openai'
@@ -40,7 +37,6 @@ def settings_page():
         st.session_state['max_tokens'] = max_tokens
         st.session_state['context_window'] = context_window
         st.session_state['num_pair_messages_recall'] = num_pair_messages_recall
-        st.session_state['show_code'] = show_code
 
         st.session_state['chat_ready'] = True
         st.success("Settings saved successfully!")
@@ -53,12 +49,7 @@ def settings_page():
                 "max_tokens": max_tokens,
                 "context_window": context_window,
                 "num_pair_messages_recall": num_pair_messages_recall,
-                "system_message": system_promps,
-                "show_code": show_code
+                "system_message": system_promps
             }, f)
-
-def main():
-    settings_page()
-    
-if __name__ == "_main_":
-    main()
+        # restart the app
+    # Prompts Section

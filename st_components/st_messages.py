@@ -4,31 +4,19 @@ from st_components.st_interpreter import setup_interpreter
 # Database
 from src.data.database import save_chat
 from src.data.models import Chat
-from langdetect import detect, DetectorFactory, LangDetectException
 
 # Image
 from PIL import Image
 from io import BytesIO
 import base64
 
-# Language detection
-DetectorFactory.seed = 0
-
-def detect_language(text):
-    try:
-        language = detect(text)
-        return language
-    except LangDetectException:
-        return "unknown"
 
 def chat_with_interpreter():
 
     # GENERATE MESSAGES
     if prompt := st.chat_input(placeholder="Write here your message", disabled=not st.session_state['chat_ready']):
-        setup_interpreter()
 
-        language = detect_language(prompt)
-        # st.write(f"Detected language: {language}")
+        setup_interpreter()
 
         handle_user_message(prompt)
 
@@ -45,10 +33,9 @@ def handle_user_message(prompt):
 
 
 def add_memory(prompt):
-    look_back = -2 * st.session_state['num_pair_messages_recall']
+    look_back = -2*st.session_state['num_pair_messages_recall']
     memory = '\n'.join(
-        [f"{i['role'].capitalize()}: {i['content']}"
-         for i in st.session_state['messages'][look_back:]]
+        [f"{i['role'].capitalize()}: {i['content']}" for i in st.session_state['messages'][look_back:]]
     ).replace('User', '\nUser'
               )
     prompt_with_memory = f"user's request:{prompt}. --- \nBelow is the transcript of your past conversation with the user: {memory} ---\n"
@@ -78,64 +65,58 @@ def handle_assistant_response(prompt):
 
 
 def format_response(chunk, full_response):
-    show_code = st.session_state.get('show_code', False)
-
     # Message
     if chunk['type'] == "message":
         full_response += chunk.get("content", "")
         if chunk.get('end', False):
             full_response += "\n"
 
-    if show_code:
-        # Code
-        if chunk['type'] == "code":
-            if chunk.get('start', False):
-                full_response += "python\n"
-            full_response += chunk.get('content', '')
-            if chunk.get('end', False):
-                full_response += "\n\n"
+    # Code
+    if chunk['type'] == "code":
+        if chunk.get('start', False):
+            full_response += "```python\n"
+        full_response += chunk.get('content', '')
+        if chunk.get('end', False):
+            full_response += "\n```\n"
 
-        # Output
-        if chunk['type'] == "confirmation":
-            if chunk.get('start', False):
-                full_response += "python\n"
-            full_response += chunk.get('content', {}).get('code', '')
-            if chunk.get('end', False):
-                full_response += "\n"
+    # Output
+    if chunk['type'] == "confirmation":
+        if chunk.get('start', False):
+            full_response += "```python\n"
+        full_response += chunk.get('content', {}).get('code', '')
+        if chunk.get('end', False):
+            full_response += "```\n"
 
-        # Console
-        if chunk['type'] == "console":
-            if chunk.get('start', False):
-                full_response += "python\n"
-            if chunk.get('format', '') == "active_line":
-                console_content = chunk.get('content', '')
-                if console_content is None:
-                    full_response += "No output available on console."
-            if chunk.get('format', '') == "output":
-                console_content = chunk.get('content', '')
-                full_response += console_content
-            if chunk.get('end', False):
-                full_response += "\n\n"
+    # Console
+    if chunk['type'] == "console":
+        if chunk.get('start', False):
+            full_response += "```python\n"
+        if chunk.get('format', '') == "active_line":
+            console_content = chunk.get('content', '')
+            if console_content is None:
+                full_response += "No output available on console."
+        if chunk.get('format', '') == "output":
+            console_content = chunk.get('content', '')
+            full_response += console_content
+        if chunk.get('end', False):
+            full_response += "\n```\n"
 
-        # Image
-        if chunk['type'] == "image":
-            if chunk.get('start', False) or chunk.get('end', False):
-                full_response += "\n"
-            else:
-                image_format = chunk.get('format', '')
-                if image_format == 'base64.png':
-                    image_content = chunk.get('content', '')
-                    if image_content:
-                        image = Image.open(
-                            BytesIO(base64.b64decode(image_content)))
-                        new_image = Image.new("RGB", image.size, "white")
-                        new_image.paste(image, mask=image.split()[3])
-                        buffered = BytesIO()
-                        new_image.save(buffered, format="PNG")
-                        img_str = base64.b64encode(buffered.getvalue()).decode()
-                        full_response += f"![Image](data:image/png;base64,{img_str})\n"
+    # Image
+    if chunk['type'] == "image":
+        if chunk.get('start', False) or chunk.get('end', False):
+            full_response += "\n"
+        else:
+            image_format = chunk.get('format', '')
+            if image_format == 'base64.png':
+                image_content = chunk.get('content', '')
+                if image_content:
+                    image = Image.open(
+                        BytesIO(base64.b64decode(image_content)))
+                    new_image = Image.new("RGB", image.size, "white")
+                    new_image.paste(image, mask=image.split()[3])
+                    buffered = BytesIO()
+                    new_image.save(buffered, format="PNG")
+                    img_str = base64.b64encode(buffered.getvalue()).decode()
+                    full_response += f"![Image](data:image/png;base64,{img_str})\n"
 
     return full_response
-
-if _name_ == "_main_":
-    chat_with_interpreter()

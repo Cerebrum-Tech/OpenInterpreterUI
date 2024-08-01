@@ -67,44 +67,42 @@ def about_us():
 
 #  List files in directory
 def file_handling():
-    with st.expander(label="Documents", expanded=(st.session_state['chat_ready'])):
-        st.markdown("<h4>Upload Files:", unsafe_allow_html=True)
+    with st.expander(label="Documents", expanded=st.session_state.get('chat_ready', False)):
+        st.markdown("<h4>Upload Files:</h4>", unsafe_allow_html=True)
         add_vertical_space(1)
-        uploaded_files = st.file_uploader(
-            "Choose a CSV file", accept_multiple_files=True)
+
+        uploaded_files = st.file_uploader("Choose a CSV file", accept_multiple_files=True)
         for uploaded_file in uploaded_files:
-            # save file to disk
             file_path = os.path.join(INTERPRETER_DIR, uploaded_file.name)
             with open(file_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
             st.success(f"Saved file: {uploaded_file.name}")
 
         add_vertical_space(2)
-        st.markdown("<h4>Loaded Documents:", unsafe_allow_html=True)
+        st.markdown("<h4>Loaded Documents:</h4>", unsafe_allow_html=True)
         add_vertical_space(1)
-        for filename in os.listdir(INTERPRETER_DIR):
-            st.write(filename)
-        # chek if folder is empty
-        if not os.listdir(INTERPRETER_DIR):
-            st.write('No files in the directory')
-        else:
-            if st.button(f"Delete All Files"):
-                for filename in os.listdir(INTERPRETER_DIR):
-                    os.remove(f'{INTERPRETER_DIR}/{filename}')
+
+        files_in_directory = os.listdir(INTERPRETER_DIR)
+        if files_in_directory:
+            for filename in files_in_directory:
+                st.write(filename)
+
+            if st.button("Delete All Files"):
+                for filename in files_in_directory:
+                    os.remove(os.path.join(INTERPRETER_DIR, filename))
                     st.success(f"{filename} has been deleted!")
-            # download selected file
-            st.markdown("<h4>Download Files:", unsafe_allow_html=True)
+
+            st.markdown("<h4>Download Files:</h4>", unsafe_allow_html=True)
             add_vertical_space(1)
-            # select a file to download
-            file_to_download = st.selectbox(
-                "Select a file", os.listdir(INTERPRETER_DIR))
-            # download button
+            file_to_download = st.selectbox("Select a file", files_in_directory)
             st.download_button(
                 label="Download file",
-                data=open(f"{INTERPRETER_DIR}/{file_to_download}",
-                          "rb").read(),
+                data=open(os.path.join(INTERPRETER_DIR, file_to_download), "rb").read(),
                 file_name=file_to_download
             )
+        else:
+            st.write('No files in the directory')
+
 
 # Setup OpenAI
 
