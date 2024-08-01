@@ -1,10 +1,14 @@
 {
     "openai": {
+        "openai/llama-3-1-405b":
+        {
+            "context_window": 128000
+        },
         "openai/claude-3-5-sonnet": {
             "context_window": 16000
         },
         "openai/gpt-4o": {
-            "context_window": 16000
+            "context_window": 128000
         },
         "gpt-4": {
             "context_window": 8192
@@ -16,7 +20,7 @@
             "context_window": 4097
         },
         "openai/Meta-Llama-3-70B": {
-            "context_window": 4096
+            "context_window": 8096
         }
     },
     "openrouter": {
