@@ -1,6 +1,5 @@
 import streamlit as st
 import os
-from langdetect import detect
 
 INTERPRETER_DIR = os.path.join(os.getcwd(), 'interpreter')
 
@@ -17,11 +16,10 @@ def setup_interpreter():
         'messages',
         st.session_state.get('mensajes', [])
     )
-    
-    
     st.session_state['interpreter'].llm.model = st.session_state['model']
     st.session_state['interpreter'].llm.temperature = st.session_state['temperature']
     st.session_state['interpreter'].llm.max_tokens = st.session_state['max_tokens']
+    st.session_state['interpreter'].custom_instructions = st.session_state['system_message']
     st.session_state['interpreter'].llm.custom_instructions = """
     Provide detailed analytical insights when responding to queries.
     Prioritize accuracy and clarity in your explanations.
@@ -80,16 +78,6 @@ def setup_interpreter():
                 'api_base')
 
     # Debug
-    # st.write(interpreter.__dict__)
+    # st.write(interpreter._dict_)
     # st.write(f'{interpreter.conversation_history_path=}')
     # st.write(f'{interpreter.conversation_filename =}')
-    
-def respond_to_query(query):
-    lang = detect(query)
-    
-    if lang == 'tr':
-        response = f"Bu sorguya Türkçe yanıt veriyorum: {query}"
-    else:
-        response = f"Responding in English: {query}"
-    
-    return response
