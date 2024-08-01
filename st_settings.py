@@ -60,5 +60,5 @@ def settings_page():
 def main():
     settings_page()
     
-if _name_ == "_main_":
+if __name__ == "_main_":
     main()
