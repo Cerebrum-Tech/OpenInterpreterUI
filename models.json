@@ -1,5 +1,8 @@
  {
     "openai": {
+        "openai/llama-3-1-405b": {
+            "context_window": 128000
+        },
         "openai/claude-3-5-sonnet":
         {"context_window": 16000},
 
