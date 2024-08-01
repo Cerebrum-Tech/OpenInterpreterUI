@@ -96,6 +96,7 @@ def load_settings():
     max_tokens = settings['max_tokens']
     num_pair_messages_recall = settings['num_pair_messages_recall']
     system_promps = settings['system_message']
+    print(openai_key, model, context_window, temperature, max_tokens, num_pair_messages_recall, system_promps)
     os.environ["OPENAI_API_KEY"] = openai_key
     st.session_state['api_choice'] = 'openai'
     st.session_state['openai_key'] = openai_key
@@ -107,3 +108,4 @@ def load_settings():
     st.session_state['chat_ready'] = True
     st.success("Settings saved successfully!")
     st.session_state['system_message'] = system_promps
+   
