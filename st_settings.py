@@ -1,5 +1,3 @@
-# st_settings.py
-
 import streamlit as st
 import json
 import os
@@ -14,7 +12,7 @@ def settings_page():
     model = st.selectbox(
         label='🔌 Models',
         options=list(st.session_state.get('models', {}).get('openai', {}).keys()),
-        index=0,
+        index=0 if st.session_state.get('model') is None else list(st.session_state.get('models', {}).get('openai', {}).keys()).index(st.session_state.get('model'))
     )
     context_window = st.session_state['models']['openai'][model]['context_window']
     temperature = st.slider('🌡 Temperature', min_value=0.01, max_value=1.0,
@@ -23,10 +21,15 @@ def settings_page():
                            value=st.session_state.get('max_tokens', 600), step=1)
 
     num_pair_messages_recall = st.slider(
-        '*Memory Size*: User-assistant message pairs', min_value=1, max_value=10, value=7)
+        'Memory Size: User-assistant message pairs', min_value=1, max_value=10, value=7)
 
     button_container = st.empty()
     save_button = button_container.button("Save Settings 🚀", key='save_model_configs')
+
+    system_promps = st.text_area("System Message", value=st.session_state.get('system_message'))
+
+    # Show Code option
+    show_code = st.checkbox("Show Code", value=st.session_state.get('show_code', False))
 
     if save_button:
         os.environ["OPENAI_API_KEY"] = openai_key
@@ -37,10 +40,25 @@ def settings_page():
         st.session_state['max_tokens'] = max_tokens
         st.session_state['context_window'] = context_window
         st.session_state['num_pair_messages_recall'] = num_pair_messages_recall
+        st.session_state['show_code'] = show_code
 
         st.session_state['chat_ready'] = True
         st.success("Settings saved successfully!")
+        st.session_state['system_message'] = system_promps
+        # Save the settings to a file
+        with open('settings.json', 'w') as f:
+            json.dump({
+                "model": model,
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "context_window": context_window,
+                "num_pair_messages_recall": num_pair_messages_recall,
+                "system_message": system_promps,
+                "show_code": show_code
+            }, f)
 
-    # Prompts Section
-    st.subheader("Prompts")
-    st.text_area("System Message", value=st.session_state.get('system_message', PROMPTS.system_message), key='system_message')
+def main():
+    settings_page()
+    
+if _name_ == "_main_":
+    main()
