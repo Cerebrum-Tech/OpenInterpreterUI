@@ -87,7 +87,7 @@ def introduction():
 
 def load_settings():
     # read settings.json
-    with open('settings.json', 'r') as f:
+    with open('/app/settings.json', 'r') as f:
         settings = json.load(f)
     openai_key = os.environ.get('OPENAI_API_KEY', "")
     model = settings['model']
@@ -96,6 +96,8 @@ def load_settings():
     max_tokens = settings['max_tokens']
     num_pair_messages_recall = settings['num_pair_messages_recall']
     system_promps = settings['system_message']
+    show_code = settings['show_code']
+    print(openai_key, model, context_window, temperature, max_tokens, num_pair_messages_recall, system_promps, show_code)
     os.environ["OPENAI_API_KEY"] = openai_key
     st.session_state['api_choice'] = 'openai'
     st.session_state['openai_key'] = openai_key
@@ -107,3 +109,4 @@ def load_settings():
     st.session_state['chat_ready'] = True
     st.success("Settings saved successfully!")
     st.session_state['system_message'] = system_promps
+    st.session_state['show_code'] = show_code

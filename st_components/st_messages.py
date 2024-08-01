@@ -78,7 +78,8 @@ def handle_assistant_response(prompt):
 
 
 def format_response(chunk, full_response):
-    show_code = st.session_state.get('show_code', False)
+
+
 
     # Message
     if chunk['type'] == "message":
@@ -86,14 +87,13 @@ def format_response(chunk, full_response):
         if chunk.get('end', False):
             full_response += "\n"
 
-    if show_code:
-        # Code
-        if chunk['type'] == "code":
-            if chunk.get('start', False):
-                full_response += "python\n"
-            full_response += chunk.get('content', '')
-            if chunk.get('end', False):
-                full_response += "\n\n"
+
+    if chunk['type'] == "code":
+        if chunk.get('start', False):
+            full_response += "python\n"
+        full_response += chunk.get('content', '')
+        if chunk.get('end', False):
+            full_response += "\n\n"
 
         # Output
         if chunk['type'] == "confirmation":
@@ -137,5 +137,5 @@ def format_response(chunk, full_response):
 
     return full_response
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     chat_with_interpreter()

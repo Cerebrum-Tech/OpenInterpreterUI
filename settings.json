@@ -1,1 +1,1 @@
-{"model": "openai/gpt-4o", "temperature": 0.88, "max_tokens": 1290, "context_window": 16000, "num_pair_messages_recall": 7, "system_message": "wdhasdjsadasjdsadhsa", "show_code": false}
+{"model": "openai/llama-3-1-405b", "temperature": 0.1, "max_tokens": 600, "context_window": 128000, "num_pair_messages_recall": 7, "system_message": "\"You are a finance expert\"", "show_code": false}

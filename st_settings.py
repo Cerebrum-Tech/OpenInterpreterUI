@@ -46,7 +46,7 @@ def settings_page():
         st.success("Settings saved successfully!")
         st.session_state['system_message'] = system_promps
         # Save the settings to a file
-        with open('settings.json', 'w') as f:
+        with open('/app/settings.json', 'w') as f:
             json.dump({
                 "model": model,
                 "temperature": temperature,
