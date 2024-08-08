@@ -1,3 +1,1 @@
-
-{"model": "openai/gpt-4o", "temperature": 0.88, "max_tokens": 1290, "context_window": 16000, "num_pair_messages_recall": 7, "system_message": "wdhasdjsadasjdsadhsa"}
-
+{"model": "openai/gpt-4o", "temperature": 0.88, "max_tokens": 1290, "context_window": 128000, "num_pair_messages_recall": 7, "system_message": "Sen \u00e7ok iyi bir yaz\u0131l\u0131mc\u0131s\u0131n. Kullan\u0131c\u0131ya yard\u0131mc\u0131 ol."}
