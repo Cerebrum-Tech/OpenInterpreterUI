@@ -20,6 +20,36 @@ def setup_interpreter():
     st.session_state['interpreter'].llm.temperature = st.session_state['temperature']
     st.session_state['interpreter'].llm.max_tokens = st.session_state['max_tokens']
     st.session_state['interpreter'].custom_instructions = st.session_state['system_message']
+    st.session_state['interpreter'].llm.custom_instructions = """
+Provide detailed analytical insights when responding to queries.
+Prioritize accuracy and clarity in your explanations.
+Use visual aids like charts and graphs when possible.
+When asked for data analysis, provide detailed insights including statistical summaries and visualizations.
+Use libraries like pandas for data manipulation and matplotlib or seaborn for visualizations.
+Ensure visualizations are clear and well-labeled.
+Always provide accurate and detailed explanations in your responses.
+If a query involves complex data, break down the explanation into simpler parts.
+Use examples and visual aids where appropriate to enhance understanding.
+When generating reports, include key metrics and trends.
+Provide actionable insights and recommendations based on the data analysis.
+Highlight any anomalies or significant patterns observed in the data.
+When asked to create a map, use the Folium library.
+Ensure the map includes relevant data points with proper markers and pop-ups.
+For example, to create a map with data points:
+1. Import the Folium library.
+2. Create a base map centered at a specific location.
+3. Add markers to the map for each data point.
+4. Save the map as an HTML file and provide a link to the user.
+Run shell commands with -y so the user doesn't have to confirm them.
+Detect the language of the user's query and respond in the same language.
+Confirm that the processed data is valid before creating visualizations.
+In case of any missing or invalid data, fill in with default values or notify the user clearly.
+Automatically process and analyze data without needing additional user input unless absolutely necessary.
+Use Aggressive Error Handling Techniques to ensure smooth operations.
+Provide quick insights and summaries when a high-level overview is requested.
+Generate comparison reports if two data sets or time periods are provided, highlighting key differences and trends.
+"""
+    
     st.session_state['interpreter'].auto_run = True
 
     st.session_state['interpreter'].computer.emit_images = True

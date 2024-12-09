@@ -1,0 +1,23 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [32.859741, 39.933365],
+              [32.859741, 39.933365],
+              [32.859741, 39.933365]
+              
+            ]
+          ]
+        },
+        "properties": {
+          "NAME_1": "Ankara"
+        }
+      }
+     
+    ]
+  }

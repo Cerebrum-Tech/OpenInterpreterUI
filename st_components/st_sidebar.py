@@ -3,13 +3,14 @@ import json
 import re
 import uuid
 import platform
+import os
 from urllib.parse import urlparse, urljoin
+from st_components.st_conversations import conversation_navigation, create_conversation
 from streamlit.components.v1 import html
 from streamlit_extras.add_vertical_space import add_vertical_space
 
 from st_components.st_conversations import conversation_navigation
 
-import os
 INTERPRETER_DIR = os.path.join(os.getcwd(), 'interpreter')
 
 OPEN_AI = 'LLMProxy'
@@ -19,60 +20,27 @@ VERTEX_AI = 'Vertex AI'
 LOCAL_AI = 'Local LLM'
 OPEN_AI_MOCK = 'OpenAI Mock'
 
-
 def st_sidebar():
-    # try:
     with st.sidebar:
+        # Display the file path for debugging purposes
+        #st.write(f"INTERPRETER_DIR: {INTERPRETER_DIR}")
+
+        # Check if directory exists before proceeding
+        if not os.path.exists(INTERPRETER_DIR):
+            st.error(f"Directory {INTERPRETER_DIR} does not exist.")
+            return
+
         # Select choice of API Server
         api_server = OPEN_AI
-        set_open_ai_credentials()
-        # Set credentials based on choice of API Server
-        # elif api_server == AZURE_OPEN_AI:
-        #     set_azure_open_ai_credentials()
-        # elif api_server == OPEN_ROUTER:
-        #     set_open_router_credentials()
-        # elif api_server == VERTEX_AI:
-        #     set_vertex_ai_credentials()
-        # elif api_server == LOCAL_AI:
-        #     local_server_credentials()
-        # elif api_server == OPEN_AI_MOCK:
-        #     st.warning('under construction')
 
         # file upload and delete
         file_handling()
 
-        # Section dedicated to navigate conversations
-        conversation_navigation()
-
-        # Section dedicated to About Us
-        about_us()
-
-    # except Exception as e:
-    #     st.error(e)
-
-
-# About Us Section
-def about_us():
-    add_vertical_space(4)
-    st.markdown(
-        f"<div style='text-align: center'><a href='https://cerebrumtechnologies.com/' target='_blank'><img src='https://cerebrumtechnologies.com/wp-content/uploads/2020/12/logo.png' width='200'></a></div>",
-        unsafe_allow_html=True,
-    )
-    add_vertical_space(2)
-    html_chat = '<center><h5>The CereAI Code Interpreter runs code on a sandbox environment connected to the Internet. Make sure to use it responsibly on production envidonments.</h5>'
-    st.markdown(html_chat, unsafe_allow_html=True)
-
-
-# Upload file
-
-
-#  List files in directory
 def file_handling():
-    with st.expander(label="Documents", expanded=(st.session_state['chat_ready'])):
-        st.markdown("<h4>Upload Files:", unsafe_allow_html=True)
+    with st.expander(label="Documents", expanded=(st.session_state.get('chat_ready', True))):
+        st.markdown("<h4>Upload Files:</h4>", unsafe_allow_html=True)
         add_vertical_space(1)
-        uploaded_files = st.file_uploader(
-            "Choose a CSV file", accept_multiple_files=True)
+        uploaded_files = st.file_uploader("Choose a CSV file", accept_multiple_files=True)
         for uploaded_file in uploaded_files:
             # save file to disk
             file_path = os.path.join(INTERPRETER_DIR, uploaded_file.name)
@@ -81,71 +49,47 @@ def file_handling():
             st.success(f"Saved file: {uploaded_file.name}")
 
         add_vertical_space(2)
-        st.markdown("<h4>Loaded Documents:", unsafe_allow_html=True)
+        st.markdown("<h4>Loaded Documents:</h4>", unsafe_allow_html=True)
         add_vertical_space(1)
-        for filename in os.listdir(INTERPRETER_DIR):
-            st.write(filename)
-        # chek if folder is empty
-        if not os.listdir(INTERPRETER_DIR):
-            st.write('No files in the directory')
-        else:
-            if st.button(f"Delete All Files"):
-                for filename in os.listdir(INTERPRETER_DIR):
-                    os.remove(f'{INTERPRETER_DIR}/{filename}')
+        if not os.path.exists(INTERPRETER_DIR):
+            st.error(f"Directory {INTERPRETER_DIR} does not exist.")
+            return
+
+        files = os.listdir(INTERPRETER_DIR)
+        if files:
+            for filename in files:
+                st.write(filename)
+            if st.button("Delete All Files"):
+                for filename in files:
+                    os.remove(os.path.join(INTERPRETER_DIR, filename))
                     st.success(f"{filename} has been deleted!")
+
+            # Allow user to select a file to delete
+            st.markdown("<h4>Delete a specific file:</h4>", unsafe_allow_html=True)
+            add_vertical_space(1)
+            file_to_delete = st.selectbox("Select a file to delete", files)
+            if st.button("Delete selected file"):
+                os.remove(os.path.join(INTERPRETER_DIR, file_to_delete))
+                st.success(f"{file_to_delete} has been deleted!")
+
             # download selected file
-            st.markdown("<h4>Download Files:", unsafe_allow_html=True)
+            st.markdown("<h4>Download Files:</h4>", unsafe_allow_html=True)
             add_vertical_space(1)
             # select a file to download
-            file_to_download = st.selectbox(
-                "Select a file", os.listdir(INTERPRETER_DIR))
+            file_to_download = st.selectbox("Select a file to download", files)
             # download button
             st.download_button(
                 label="Download file",
-                data=open(f"{INTERPRETER_DIR}/{file_to_download}",
-                          "rb").read(),
+                data=open(os.path.join(INTERPRETER_DIR, file_to_download), "rb").read(),
                 file_name=file_to_download
             )
+        else:
+            st.write('No files in the directory')
 
-# Setup OpenAI
+if __name__ == "__main__":
+    file_handling()
 
 
-def set_open_ai_credentials():
-    with st.expander(label="Settings", expanded=(not st.session_state['chat_ready'])):
-        openai_key = os.environ['OPENAI_API_KEY']
-        model = st.selectbox(
-            label='🔌 models',
-            options=list(st.session_state['models']['openai'].keys()),
-            index=0,
-            # disabled= not st.session_state.openai_key # Comment: Why?
-        )
-        context_window = st.session_state['models']['openai'][model]['context_window']
-
-        temperature = st.slider('🌡 Tempeture', min_value=0.01, max_value=1.0,
-                                value=st.session_state.get('temperature', 0.1), step=0.01)
-        max_tokens = st.slider('📝 Max tokens', min_value=1, max_value=2000,
-                               value=st.session_state.get('max_tokens', 600), step=1)
-
-        num_pair_messages_recall = st.slider(
-            '**Memory Size**: user-assistant message pairs', min_value=1, max_value=10, value=7)
-
-        button_container = st.empty()
-        save_button = button_container.button(
-            "Start Chat 🚀", key='open_ai_save_model_configs')
-
-        if save_button and openai_key:
-            os.environ["OPENAI_API_KEY"] = openai_key
-            st.session_state['api_choice'] = 'openai'
-            st.session_state['openai_key'] = openai_key
-            st.session_state['model'] = model
-            st.session_state['temperature'] = temperature
-            st.session_state['max_tokens'] = max_tokens
-            st.session_state['context_window'] = context_window
-            st.session_state['num_pair_messages_recall'] = num_pair_messages_recall
-
-            st.session_state['chat_ready'] = True
-            button_container.empty()  # Rerun does not allow it
-            st.rerun()
 
 # Setup Azure OpenAI
 

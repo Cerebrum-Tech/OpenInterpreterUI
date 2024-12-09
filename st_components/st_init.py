@@ -1,15 +1,15 @@
 import streamlit as st
-import json
 
-def set_style():    
-    # PAGE CONFIG
+
+def set_page_config():
     st.set_page_config(
         page_title="Open-Interpreter UI",
         page_icon="🤖",
         layout="wide",
         initial_sidebar_state="expanded",
     )
-    
+
+def set_style():    
     # STYLES
     st.markdown(
     """<style>.eczjsme4 {
