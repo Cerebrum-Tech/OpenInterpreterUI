@@ -85,9 +85,16 @@ def main():
     login_placeholder = st.empty()
 
     try:
-        name, authentication_status, username = authenticator.login('main', fields=["username", "password"])
+       login_result = authenticator.login('main', fields=["username", "password"])
+       
+       if login_result:  # Ensure it's not None
+        name, authentication_status, username = login_result
+       else:
+        raise ValueError("Login failed, no values returned.")
+    
     except Exception as e:
-        st.error(f"Error during login: {e}")
+          st.error(f"Error during login: {e}")
+
 
     if authentication_status is None:
         with login_placeholder.container():

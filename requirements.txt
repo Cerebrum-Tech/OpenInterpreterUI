@@ -5,3 +5,4 @@ streamlit==1.27.1
 streamlit-extras==0.3.2
 streamlit-option-menu==0.3.6
 wget==3.2
+langdetect

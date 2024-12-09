@@ -178,4 +178,7 @@ cython_debug/
 .vscode
 
 interpreter/*
+
+hash_passwords.py
 config.yaml
+
