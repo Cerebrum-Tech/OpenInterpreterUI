@@ -126,7 +126,7 @@ def show_aski_panel():
 
     st.markdown('<div class="main-title">ASKİ GÖRÜNTÜLEME PANELİ</div>', unsafe_allow_html=True)
 
-    df = pd.read_csv('R2Tap-Aski.csv')
+    df = pd.read_csv('/home/esra/OpenInterpreterUI/R2Tap-Aski.csv')
     df['Sonuç'] = df['Sonuç'].replace({'No Leak': 'N', 'Leak': 'L'})
 
     date_list = sorted(df['kayit_zamani'].str[:10].unique())[::-1]
@@ -177,7 +177,7 @@ def show_aski_panel():
         donut_chart = alt.Chart(source).mark_arc(innerRadius=60).encode(
             theta=alt.Theta("Değer:Q"),
             color=alt.Color("Kategori:N", scale=alt.Scale(range=chart_color))
-        ).properties(width=300, height=250)
+        ).properties(width=250, height=250)  # Ensuring consistent width and height.
 
         text = donut_chart.mark_text(
             align='center',
@@ -194,23 +194,20 @@ def show_aski_panel():
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        #st.markdown('#### Sızıntı Olmayan Konumlar')
         no_leak_choropleth = make_choropleth(df_selected_date[df_selected_date['Sonuç'] == 'N'], '#0056b3', 'Sızıntı Olmayan Konumlar')
-        st.plotly_chart(no_leak_choropleth, use_container_width=True)
+        st.plotly_chart(no_leak_choropleth, use_container_width=True, key="no_leak_choropleth")
 
     with col2:
-        #st.markdown('#### Sızıntı Olan Konumlar')
         leak_df = df_selected_date[df_selected_date['Sonuç'] == 'L']
         if leak_df.empty:
             st.warning("Seçilen tarihte sızıntı bilgisi bulunamamıştır.")
         else:
             leak_choropleth = make_choropleth(leak_df, 'red', 'Sızıntı Olan Konumlar')
-            st.plotly_chart(leak_choropleth, use_container_width=True)
+            st.plotly_chart(leak_choropleth, use_container_width=True, key="leak_choropleth")
 
     with col3:
-        #st.markdown('#### Tüm Konumlar')
         all_locations_choropleth = make_choropleth(df, 'green', 'Tüm Konumlar')
-        st.plotly_chart(all_locations_choropleth, use_container_width=True)
+        st.plotly_chart(all_locations_choropleth, use_container_width=True, key="all_locations_choropleth")
 
     st.markdown('### Genel Detaylar')
 
@@ -220,12 +217,12 @@ def show_aski_panel():
         with sub_col1:
             no_leak_count = len(df_selected_date[df_selected_date['Sonuç'] == 'N'])
             st.markdown(f'#### Sızıntı Yok: {no_leak_count}')
-            st.altair_chart(make_donut(no_leak_count, 'Sızıntı Yok', 'blue'))
+            st.altair_chart(make_donut(no_leak_count, 'Sızıntı Yok', 'blue'), use_container_width=True, key="no_leak_donut")
 
         with sub_col2:
             leak_count = len(df_selected_date[df_selected_date['Sonuç'] == 'L'])
             st.markdown(f'#### Sızıntı Var: {leak_count}')
-            st.altair_chart(make_donut(leak_count, 'Sızıntı Var', 'red'))
+            st.altair_chart(make_donut(leak_count, 'Sızıntı Var', 'red'), use_container_width=True, key="leak_donut")
 
     st.markdown('### Ses Gücü ve Sızıntı Olasılığı')
 
@@ -243,7 +240,7 @@ def show_aski_panel():
         tooltip=['ID', 'Ses_Gücü', 'Sonuç']
     ).properties(width=1400, height=400)
     
-    st.altair_chart(sound_strength_chart)
+    st.altair_chart(sound_strength_chart, key="sound_strength_chart")
 
     
     show_only_leak_probability = st.checkbox('Sadece Sızıntı Olanları Göster (Sızıntı Olasılığı)')
@@ -262,10 +259,10 @@ def show_aski_panel():
         height=400,
         title='ID bazında Sızıntı Olasılığı'
     )
-    st.altair_chart(line_chart)
+    st.altair_chart(line_chart, key="line_chart")
 
     st.markdown('### Teçhizat Türleri Konumları ve Sayıları')
-    
+
     
 
     col1, col2 = st.columns([7, 2])
@@ -297,7 +294,7 @@ def show_aski_panel():
         fig_facility_type.update_traces(marker=dict(opacity=0.7, symbol='circle'), selector=dict(mode='markers'))
         fig_facility_type.update_layout(mapbox_style="open-street-map")
         fig_facility_type.update_layout(margin={"r":0, "t":1, "l":0, "b":0})
-        st.plotly_chart(fig_facility_type, use_container_width=True)
+        st.plotly_chart(fig_facility_type, use_container_width=True, key="fig_facility_type")
 
     with col2:
         Tesis_Türü = ['Sayaç', 'Vana', 'Hidrant', 'Boru']
@@ -324,8 +321,6 @@ def show_aski_panel():
                 <p class="{class_name} count-text">{count}</p>
             </div>
             """, unsafe_allow_html=True)
-            
-    #st.markdown('### 3D Ses Gücü Bar Grafiği')
 
     fig = go.Figure()
 
@@ -373,7 +368,7 @@ def show_aski_panel():
         )
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, key="3d_sound_strength_plot")
 
     st.markdown(f'<div class="alarm-table"><h3><i class="fas fa-exclamation-triangle alarm-table-icon"></i>Sızıntı Olan Konumlar İçin Alarm Tablosu</h3>', unsafe_allow_html=True)
     st.markdown('Aşağıdaki tabloda tespit edilen sızıntı yerleri ve detayları gösterilmektedir.', unsafe_allow_html=True)

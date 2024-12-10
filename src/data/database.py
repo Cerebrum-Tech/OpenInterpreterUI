@@ -3,7 +3,7 @@ import uuid
 from contextlib import contextmanager
 from src.data.models import Conversation, Chat
 
-DATABASE_PATH = "../chats.db"
+DATABASE_PATH = "/home/esra/OpenInterpreterUI/chats.db"
 
 
 @contextmanager

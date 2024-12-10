@@ -49,7 +49,7 @@ def water_dashboard():
     st.markdown('<div class="main-title">PRESSURE MONITORING DASHBOARD</div>', unsafe_allow_html=True)
 
    
-    df = pd.read_csv('pressure_mock_data (4).csv')
+    df = pd.read_csv('/home/esra/OpenInterpreterUI/pressure_mock_data (4).csv')
 
     df['MEASURE_DATETIME'] = pd.to_datetime(df['MEASURE_DATETIME'], errors='coerce')
     df['REG_TIME'] = pd.to_datetime(df['REG_TIME'], errors='coerce')
@@ -147,12 +147,12 @@ def water_dashboard():
     with col1:
         st.markdown('#### Water Pressure Locations by Point Name')
         water_pressure_map = make_map(df_selected_time)
-        st.plotly_chart(water_pressure_map, use_container_width=True)
+        st.plotly_chart(water_pressure_map, use_container_width=True, key="water_pressure_map")
 
     with col2:
         st.markdown('#### Device Temperature Locations by Point Name')
         device_temperature_map = make_map(df_selected_time)
-        st.plotly_chart(device_temperature_map, use_container_width=True)
+        st.plotly_chart(device_temperature_map, use_container_width=True, key="device_temperature_map")
 
     st.markdown(f'### Details for {selected_time}')
 
@@ -162,25 +162,25 @@ def water_dashboard():
     with col1:
         chart_title = f'Water Pressure by Point Name for {selected_date} {selected_time}'
         water_pressure_chart = make_bar_chart(df_selected_time, 'POINT_NAME', 'WATER_PRESSURE', 'POINT_NAME', chart_title)
-        st.altair_chart(water_pressure_chart, use_container_width=True)
+        st.altair_chart(water_pressure_chart, use_container_width=True, key="water_pressure_chart")
 
     with col2:
         chart_title = f'Device Temperature by Point Name for {selected_date} {selected_time}'
         device_temperature_chart = make_bar_chart(df_selected_time, 'POINT_NAME', 'DEVICE_TEMPERATURE', 'POINT_NAME', chart_title)
-        st.altair_chart(device_temperature_chart, use_container_width=True)
+        st.altair_chart(device_temperature_chart, use_container_width=True, key="device_temperature_chart")
 
-  
+
     st.markdown(f'### Detailed Time-Series for a Selected Point')
     selected_point = st.selectbox('Select a point', point_names)
     df_selected_point = df_selected_date[df_selected_date['POINT_NAME'] == selected_point]
 
     chart_title = f'Water Pressure Over Time for {selected_point} on {selected_date}'
     water_pressure_time_chart = make_line_chart(df_selected_point, 'MEASURE_DATETIME', 'WATER_PRESSURE', 'POINT_NAME', chart_title, region_colors, '#e066ff')
-    st.altair_chart(water_pressure_time_chart, use_container_width=True)
+    st.altair_chart(water_pressure_time_chart, use_container_width=True, key="water_pressure_time_chart")
 
     chart_title = f'Device Temperature Over Time for {selected_point} on {selected_date}'
     device_temperature_time_chart = make_line_chart(df_selected_point, 'MEASURE_DATETIME', 'DEVICE_TEMPERATURE', 'POINT_NAME', chart_title, region_colors, '#e066ff')
-    st.altair_chart(device_temperature_time_chart, use_container_width=True)
+    st.altair_chart(device_temperature_time_chart, use_container_width=True, key="device_temperature_time_chart")
 
 
 if __name__ == "__main__":

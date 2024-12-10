@@ -124,7 +124,7 @@ def dashboard():
 
     st.markdown('<div class="main-title">LEAK INVESTIGATION DASHBOARD</div>', unsafe_allow_html=True)
 
-    df = pd.read_csv('leakage_mock_data_1st_investigation.csv')
+    df = pd.read_csv('/home/esra/OpenInterpreterUI/leakage_mock_data_1st_investigation.csv')
 
     df['AI_result'] = df['AI_result'].replace({'No Leak': 'N', 'Leak': 'L'})
 
@@ -167,7 +167,7 @@ def dashboard():
         donut_chart = alt.Chart(source).mark_arc(innerRadius=60).encode(
             theta=alt.Theta("Value:Q"),
             color=alt.Color("Category:N", scale=alt.Scale(range=chart_color))
-        ).properties(width=300, height=250)
+        ).properties(width=250, height=250)  # Ensure uniform width and height.
 
         text = donut_chart.mark_text(
             align='center',
